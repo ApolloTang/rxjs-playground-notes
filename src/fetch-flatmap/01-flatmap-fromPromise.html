@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Name Required</title>
+  <style type="text/less">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      padding-top:100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app"></div>
+  <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
+  <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.4.3-bundles-Rx.min.js"></script>
+
+  <script src="http://localhost:9091/babel/babel-standalone-v7.0.0-alpha.20.min.js"></script>
+  <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
+
+  <script type="text/babel" >
+  </script>
+
+  <script>
+    const requestStream = Rx.Observable.of('https://api.github.com/users');
+
+    const responseStream = requestStream
+      .flatMap(
+        requestUrl => Rx.Observable.fromPromise(
+          fetch(requestUrl).then(res=>res.json())
+        )
+      )
+
+    responseStream.subscribe(res=>console.log(res))
+
+  </script>
+</body>
+
+</html>
