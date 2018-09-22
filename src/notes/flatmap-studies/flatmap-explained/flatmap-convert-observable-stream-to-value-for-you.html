@@ -21,32 +21,39 @@
 
 // this finally explain flatmap
 
-var originStream = Rx.Observable.interval(100).take(10)
+let startStream = Rx.Observable.from([1,2,3]);
 
-var streamWithMap = originStream.map(num => {
+startStream.map(num => {
+
   const streamOut = Rx.Observable.create( observer => {
-    observer.next(num)
-    observer.complete()
+    observer.next(num);
+    observer.complete();
   })
-  return streamOut
-});
-streamWithMap.subscribe( stream => {  // subscribe to map give you the return of map AsItIs (an observable stream)
-  console.log('streamWithMap:', stream )
-  // because it is a stream you have to subscribe again
+  return streamOut;
+
+}).subscribe( stream => {              // Subscribe to map give you the return
+                                       //     of map AsItIs (an observable stream).
+  console.log('[1a] stream:', stream );// Observable is logged here.
+
+  // Because it is a stream you have to subscribe again.
   stream.subscribe( value => {
-    console.log('nested subscription to get value:', value )
+    console.log('[1b]: ', value )      // Value is available after nested subscription.
   })
+
 })
 
-var streamWithFlatMap = originStream.flatMap(num => {
+startStream.flatMap(num => {
+
   const streamOut = Rx.Observable.create( observer => {
     observer.next(num)
     observer.complete()
   })
-  return streamOut
-});
-streamWithFlatMap.subscribe( value => { // subscribe to flatMap give you the value, it converts the observable stream to value for you
-  console.log('valueWithFlatMap:', value)
+  return streamOut       // StreamOut of a flatMap must be one of:
+                         //     Observable, Promise, Array, or Iterable.
+}).subscribe( value => { // Subscribe to flatMap give you the value, it converts the observable stream to value for you
+
+  console.log('[2] value: ', value)
+
 })
 
 </script>
