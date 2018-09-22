@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Name Required</title>
+  <style type="text/less">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      padding-top:100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app"></div>
+  <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
+  <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.4.3-bundles-Rx.min.js"></script>
+
+  <script src="http://localhost:9091/babel/babel-standalone-v7.0.0-alpha.20.min.js"></script>
+  <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
+
+  <script>
+
+  function getStuff() {
+
+      let A = Rx.Observable.from([
+        'x', 'y', 'x'
+      ]
+        // , Rx.Scheduler.async
+      );
+
+      let B = Rx.Observable.from([
+        1,2,3
+      ]
+      // , Rx.Scheduler.async
+      );
+
+      return Rx.Observable.create( observer => {
+              observer.next(A);
+              observer.next(B);
+              observer.complete();
+          }
+      );
+  }
+
+  console.log('---- map')
+  getStuff()
+    .map(stuff => stuff)
+    .subscribe(
+        stuff => {
+          console.log( 'stuff:', stuff )
+          stuff.subscribe(
+            _stuff => console.log( '_stuff:', _stuff ),
+          );
+        },
+    );
+
+//  --A------------B------------|->
+//  vvvv map vvvvvv
+//  --A_obvs-------B_obvs-------|->
+//  --'x'-'y'-'z'--1---2---3----|->
+
+
+  console.log('---- fatMap')
+  getStuff()
+    .flatMap(stuff => stuff)
+    .subscribe(
+        stuff => console.log( stuff ),
+    );
+
+//  --A------------B------------|->
+//  vvvv flatMap vvvvvv
+//  --'x'-'y'-'z'--1---2---3----|->
+
+  </script>
+
+</body>
+
+</html>

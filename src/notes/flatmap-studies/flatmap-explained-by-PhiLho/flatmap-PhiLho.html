@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Name Required</title>
+  <style type="text/less">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      padding-top:100px;
+    }
+  </style>
+</head>
+
+<body>
+<button type="button" id="button1">Test map</button>
+<button type="button" id="button2">Test flatMap</button>
+<button type="button" id="button3">Test switchMap</button>
+<div id="results"></div>
+
+  <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
+  <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.4.3-bundles-Rx.min.js"></script>
+
+  <script src="http://localhost:9091/babel/babel-standalone-v7.0.0-alpha.20.min.js"></script>
+  <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
+
+  <script>
+// Generic code to display results
+
+var results = document.getElementById('results');
+function showHTML(html)
+{
+  results.insertAdjacentHTML('beforeend', html);
+}
+function show(text, obj)
+{
+  showHTML("<p>" + text + (obj !== undefined ? ': ' + JSON.stringify(obj) : '') + "<p>");
+}
+function showObject(obj)
+{
+  show("<p>" + JSON.stringify(obj) + "<p>");
+}
+
+// The real code
+
+var button1 = document.querySelector('#button1');
+var button2 = document.querySelector('#button2');
+var button3 = document.querySelector('#button3');
+var buttonClickStream1 = Rx.Observable.fromEvent(button1, 'click');
+var buttonClickStream2 = Rx.Observable.fromEvent(button2, 'click');
+var buttonClickStream3 = Rx.Observable.fromEvent(button3, 'click');
+
+// Raw
+Rx.Observable.merge(buttonClickStream1, buttonClickStream2, buttonClickStream3)
+  .subscribe(
+    function(v) { show("Value", v); },
+    function(e) { show("Error", e); },
+    function() { show("Done"); }
+  );
+
+// Map
+buttonClickStream1
+  .map(function (e, i)
+  {
+    e.id = i; // Add id
+    e.t = new Date(); // Add timestamp
+    return e;
+  })
+  .subscribe(function(v) { show("Button 1", v) }); // Simplify: no errors, no completion
+
+// FlatMap
+buttonClickStream2
+  // Returns several values
+  .flatMap(function (e, i)
+  {
+    return Rx.Observable
+      .interval(1000).take(5)
+      .flatMap(function (x, j) { return Rx.Observable.of(i + ' ' + j) });
+  })
+  .subscribe(function(v) { show("Button 2", v) });
+
+// FlatMapLatest v4 (= switchMap in v5 )
+buttonClickStream3
+  // Returns several values but keep only the last one
+  .switchMap(function (e, i)
+  {
+    return Rx.Observable
+      .interval(1000).take(5)
+      .flatMap(function (x, j) { return Rx.Observable.of(i + ' ' + j) });
+  })
+  .subscribe(function(v) { show("Button 3", v) });
+  </script>
+
+</body>
+
+</html>

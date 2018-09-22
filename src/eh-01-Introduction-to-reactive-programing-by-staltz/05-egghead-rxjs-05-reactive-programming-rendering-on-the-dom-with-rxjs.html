@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Name Required</title>
+  <style type="text/less">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      padding-top:100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app"></div>
+  <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
+  <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.4.3-bundles-Rx.min.js"></script>
+
+  <script src="http://localhost:9091/babel/babel-standalone-v7.0.0-alpha.20.min.js"></script>
+  <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
+
+  <script>
+    const requestStream = Rx.Observable.of('https://api.github.com/users');
+
+    const responseStream = requestStream.map(
+      url => {
+        const out = Rx.Observable.fromPromise(
+          fetch(url).then( res => res.json())
+        )
+        console.log('wwww: ', out)
+        return out;
+      }
+    )
+
+    function createItemStream(responseStream) {
+      return responseStream.map(
+      items => {
+        console.log('xxxx items:', items)
+        const out = items[1]
+        console.log('xxxx out:', out)
+        return out;
+      }
+      )
+    }
+
+    const itemStream = createItemStream(responseStream)
+    // itemStream.subscribe( y => {
+    //   console.log('yyyy: ', y)
+    // })
+
+    responseStream.map(
+        items => {
+          console.log('xxxx items:', items)
+          const out = items[1]
+          console.log('xxxx out:', out)
+          return out;
+        }
+      ).subscribe(
+      y => console.log(y)
+    )
+
+
+  </script>
+
+  <script type="text/babel" >
+  </script>
+</body>
+
+</html>

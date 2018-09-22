@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Name Required</title>
+  <style type="text/less">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      padding-top:100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app"></div>
+  <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
+  <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.4.3-bundles-Rx.min.js"></script>
+
+  <script src="http://localhost:9091/babel/babel-standalone-v7.0.0-alpha.20.min.js"></script>
+  <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
+
+  <script type="text/babel" >
+  </script>
+
+  <script>
+    // from: https://stackoverflow.com/a/41717954/3136861
+
+    const requestStream = Rx.Observable.of('https://api.github.com/users');
+
+    // With Flatmap
+    const responseMetastream_withFlatMap = requestStream
+      .flatMap(
+        requestUrl => Rx.Observable.fromPromise(
+          fetch(requestUrl).then(res=>res.json())
+        )
+      )
+
+    responseMetastream_withFlatMap.subscribe(
+      json => console.log('json: ', json)
+    )
+
+
+
+
+    // Without Flatmap
+    const responseMetastream_withoutFlatMap  = requestStream
+      .map(
+        requestUrl => Rx.Observable.fromPromise(
+          fetch(requestUrl).then(res=>res.json())
+        )
+      )
+
+    responseMetastream_withoutFlatMap.subscribe(jsonStream => {
+      console.log('jsonStream: ', jsonStream)
+      jsonStream.subscribe(
+        json => console.log('json: ', json)
+      )
+    })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Name Required</title>
+  <style type="text/less">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      padding-top:100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app"></div>
+  <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
+  <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.4.3-bundles-Rx.min.js"></script>
+<script>
+
+// this finally explain flatmap
+
+var originStream = Rx.Observable.interval(100).take(10)
+
+var streamWithMap = originStream.map(num => {
+  const streamOut = Rx.Observable.create( observer => {
+    observer.next(num)
+    observer.complete()
+  })
+  return streamOut
+});
+streamWithMap.subscribe( stream => {  // subscribe to map give you the return of map AsItIs (an observable stream)
+  console.log('streamWithMap:', stream )
+  // because it is a stream you have to subscribe again
+  stream.subscribe( value => {
+    console.log('nested subscription to get value:', value )
+  })
+})
+
+var streamWithFlatMap = originStream.flatMap(num => {
+  const streamOut = Rx.Observable.create( observer => {
+    observer.next(num)
+    observer.complete()
+  })
+  return streamOut
+});
+streamWithFlatMap.subscribe( value => { // subscribe to flatMap give you the value, it converts the observable stream to value for you
+  console.log('valueWithFlatMap:', value)
+})
+
+</script>
+</body>
+
+</html>

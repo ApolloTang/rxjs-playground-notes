@@ -21,22 +21,21 @@
   <script src="http://localhost:9091/babel/babel-standalone-v7.0.0-alpha.20.min.js"></script>
   <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
 
-  <script type="text/babel" >
-  </script>
-
   <script>
-    const requestStream = Rx.Observable.of('https://api.github.com/users');
-
-    const responseStream = requestStream
-      .flatMap(
-        requestUrl => Rx.Observable.fromPromise(
-          fetch(requestUrl).then(res=>res.json())
-        )
-      )
-
-    responseStream.subscribe(res=>console.log(res))
-
+var Color;
+(function (Color) {
+    Color[Color["Red"] = 0] = "Red";
+    Color[Color["Green"] = 1] = "Green";
+    Color[Color["Blue"] = 2] = "Blue";
+    console.log(Color)
+})(Color || (Color = {}));
+var col = Color.Red;
+col = 0; // Effectively same as Color.Red
   </script>
+
+  <!-- <script type="text/babel" > -->
+  <!--   console.log('hello') -->
+  <!-- </script> -->
 </body>
 
 </html>

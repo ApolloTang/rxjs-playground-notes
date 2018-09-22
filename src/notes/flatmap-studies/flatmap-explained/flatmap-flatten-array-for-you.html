@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Name Required</title>
+  <style type="text/less">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      padding-top:100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app"></div>
+  <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
+  <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.4.3-bundles-Rx.min.js"></script>
+<script>
+
+Rx.Observable.from([1,2,3]).map(x=>[x,x*10]).subscribe(x=>console.log(x))
+// --1-------2-------|-->
+// vvvvv map vvvv
+// --[1,10]--[2,20]--|-->
+
+Rx.Observable.from([1,2,3]).flatMap(x=>[x,x*10, [x*100]]).subscribe(x=>console.log(x))
+// --1-------2-------|-->
+// vvvvv flatmap vvvv
+// --1---10--2---20--|-->
+
+</script>
+</body>
+
+</html>
