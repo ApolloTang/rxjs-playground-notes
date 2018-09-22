@@ -12,6 +12,4 @@ Then
 $ ./start.sh
 ```
 
-Vendor libraries run at localhost:9091
-
-
+Vendor libraries serve by https://github.com/ApolloTang/vendor-server and is running at localhost:9091
