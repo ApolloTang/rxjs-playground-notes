@@ -22,13 +22,30 @@
   <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
 
   <script>
-    const requestStream = Rx.Observable.of('https://api.github.com/users');
+    const refreshBtn = document.createElement('button');
+    refreshBtn.innerHTML = 'refresh'
+    document.body.appendChild(refreshBtn);
 
-    const responseStream = requestStream.flatMap(
-      url => Rx.Observable.fromPromise(
-        fetch(url).then( res => res.json())
-      )
+    const listView = document.createElement('div');
+    document.body.appendChild(listView);
+
+    const refreshClickStream = Rx.Observable.fromEvent(refreshBtn, 'click').map(
+      _ => {
+        listView.innerHTML = '';
+        const randomOffset = Math.floor(Math.random()*500)
+        return 'https://api.github.com/users?since='+randomOffset;
+      }
     )
+
+    const startUpRequestStream = Rx.Observable.of('https://api.github.com/users');
+
+    const responseStream = refreshClickStream
+      .merge(startUpRequestStream)
+      .flatMap(
+        url => Rx.Observable.fromPromise(
+          fetch(url).then( res => res.json())
+        )
+      )
 
     function createItemStream(responseStream) {
       return responseStream.map(
@@ -52,7 +69,8 @@
       linkEl.href = item.url;
       linkEl.innerHTML = item.login
       el.appendChild(linkEl)
-      document.body.appendChild(el)
+
+      listView.appendChild(el)
     }
 
     item1Stream.subscribe(item => renderItem(item));
