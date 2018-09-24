@@ -60,21 +60,12 @@
 
     function createItemStream(responseStream, replaceOneClickStream) {
 
-      // replaceOneClickStream.subscribe(e=>{
-      //   console.log('xxxxxxxx', responseStream)
-      // })
-
       // vvvvvvvvvvvvvvvvvvvvv
       const replaceStream = replaceOneClickStream
-        .withLatestFrom(responseStream)
-        .map(
-          (streams) => {
-            console.log('replaceOne', streams)
-            const out =  streams[1][Math.floor(Math.random()*streams[1].length)]
-            console.log('replaceOne out ', out )
-            return out;
-          }
-        )
+        .withLatestFrom(responseStream, (mouseEvent, _responseStream) =>{
+          console.log(mouseEvent, _responseStream)
+          return _responseStream[Math.floor(Math.random()*_responseStream.length)]
+        })
       // ^^^^^^^^^^^^^^^^^^^^
 
       return responseStream
