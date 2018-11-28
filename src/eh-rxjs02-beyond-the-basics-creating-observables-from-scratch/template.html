@@ -16,33 +16,35 @@
   <div class="app"></div>
   <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
   <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
-  <script src="http://localhost:9091/rxjs/rxjs-v5.4.3-bundles-Rx.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.5.12.js"></script>
 
   <script src="http://localhost:9091/babel/babel-standalone-v7.0.0-alpha.20.min.js"></script>
   <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
 
   <script>
-
-let initialStream = Rx.Observable.interval(100).take(10);
-initialStream = Rx.Observable.from([1,2,3])
-const stream = initialStream.flatMap(
-  (v) => {
-    let out = Rx.Observable.create( observer =>{
-      observer.next('x')
-    })
-    out = v;//'x'
-    console.log(v)
-    return out;
-  }
-).subscribe( v=>console.log(v))
-
-
-
+    console.log( `
+      _: version ${_.VERSION} </br>
+      less: version ${less.version} </br>
+    `);
   </script>
 
-  <!-- <script type="text/babel" > -->
-  <!--   console.log('hello') -->
-  <!-- </script> -->
+  <script type="text/babel" >
+    // Observable's value producer
+    // Producer determines when the value are push
+    const bar = Rx.Observable.create(obs => {
+      console.log('hello Observable')
+      obs.next('a')
+      obs.next('b')
+      setTimeout(()=>{
+        obs.next('c')
+      }, 3000)
+    })
+
+    // Observable's value consumer
+    bar.subscribe( (result) => {
+      console.log(result)
+    })
+  </script>
 </body>
 
 </html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Name Required</title>
+  <style type="text/less">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      padding-top:100px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app"></div>
+  <script src="http://localhost:9091/less/less-v2.7.2.min.js"></script>
+  <script src="http://localhost:9091/lodash/lodash-4.17.10.min.js"></script>
+  <script src="http://localhost:9091/rxjs/rxjs-v5.5.12.js"></script>
+
+  <script src="http://localhost:9091/babel/babel-standalone-v7.0.0-alpha.20.min.js"></script>
+  <script src="http://localhost:9091/babel/babel-polyfill-v7.0.0-alpha.20.min.js"></script>
+
+  <script>
+    console.log( `
+      _: version ${_.VERSION} </br>
+      less: version ${less.version} </br>
+    `);
+  </script>
+
+  <script type="text/babel" >
+
+    // const fromArrayExample = Rx.Observable.fromArray(['a', 'b', 'c'])
+    // according to rxjs 4 docs, fromArray has been deprecated.
+
+    const fromArrayExample = Rx.Observable.from(['a', 'b', 'c'])
+    fromArrayExample.subscribe(
+      function nextValueHandler(v) {
+        console.log('from Array:', v)
+      },
+      function errorHandler(er) {
+        console.log('error msg: ', er)
+      },
+      function completeHandler() {
+        console.log('done')
+      }
+    )
+
+    // const fromPromiseExample = Rx.Observable.fromPromise(  // Still work in version 5
+    const fromPromiseExample = Rx.Observable.from(
+      fetch('https://null.jsbin.com')
+    )
+    fromPromiseExample.subscribe(
+      function nextValueHandler(v) {
+        console.log('from promise:', v)
+      },
+      function errorHandler(er) {
+        console.log('error msg: ', er)
+      },
+      function completeHandler() {
+        console.log('done')
+      }
+    )
+
+    // Observable is push by nature it will
+    // convert the PULL of generator to PUSH
+    const fromIterator = Rx.Observable.from(
+      (function* () {
+        yield 'one'
+        yield 'two'
+        yield 'three'
+      })()
+    )
+    fromIterator.subscribe(
+      function nextValueHandler(v) {
+        console.log('from Iterator:', v)
+      },
+      function errorHandler(er) {
+        console.log('error msg: ', er)
+      },
+      function completeHandler() {
+        console.log('done')
+      }
+    )
+  </script>
+</body>
+
+</html>
